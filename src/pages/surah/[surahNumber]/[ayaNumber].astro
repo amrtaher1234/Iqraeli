@@ -1,0 +1,48 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Surah from "../../../components/Surah.astro";
+import SurahMetadata from "../../../components/SurahMetada.astro";
+import { type SurahType } from "../../../types/surah";
+import tafseer from "../../api/surah/[surahNumber]/tafseer.json";
+
+const { surahNumber, ayaNumber } = Astro.params;
+const surahData: SurahType = await fetch(
+  `${Astro.url.origin}/api/surah/${surahNumber}/${ayaNumber}`
+).then((d) => d.json());
+
+const ayahTafseer = tafseer.find(
+  (t) => t.aya === ayaNumber && t.number === surahNumber
+);
+
+if (!tafseer) {
+  throw new Error("No tafsir found");
+}
+
+const title = `اقرألي - ${surahData.surah.name.long} - ${Number(
+  ayaNumber!
+).toLocaleString("ar")} `;
+const description = surahData.text.arab;
+---
+
+<script></script>
+
+<Layout title={title}>
+  <meta name="description" content={description} />
+  <main transition:animate="fade">
+    <Surah
+      tafsirArabic={ayahTafseer!.text}
+      transition:animate="slide"
+      {...surahData}
+    />
+
+    <span class="my-12 block"></span>
+    <SurahMetadata
+      transition:animate="fade"
+      juz={surahData.meta.juz.toLocaleString("ar")}
+      hizbQuarter={surahData.meta.hizbQuarter.toLocaleString("ar")}
+      page={surahData.meta.page.toLocaleString("ar")}
+      surahNumber={Number(surahNumber as string).toLocaleString("ar")}
+      ayaNumber={Number(ayaNumber!).toLocaleString("ar")}
+    />
+  </main>
+</Layout>

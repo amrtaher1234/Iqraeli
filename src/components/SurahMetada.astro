@@ -1,0 +1,37 @@
+---
+import type { SurahType } from "../types/surah";
+
+interface Props {
+  juz: string;
+  page: string;
+  hizbQuarter: string;
+  surahNumber: string;
+  ayaNumber: string;
+}
+
+const { hizbQuarter, juz, page, surahNumber, ayaNumber } = Astro.props;
+---
+
+<section class="grid grid-cols-4">
+  <section class="text-center">
+    <h4 class="italic text-center pose-base font-decorative mb-6">حزب</h4>
+    <p class="text-lg">{hizbQuarter}</p>
+  </section>
+
+  <section class="text-center">
+    <h4 class="italic text-center pose-base font-decorative mb-6">
+      رقم الصفحة
+    </h4>
+    <p class="text-lg">{page}</p>
+  </section>
+
+  <section class="text-center">
+    <h4 class="italic text-center pose-base font-decorative mb-6">جزء</h4>
+    <p class="text-lg">{juz}</p>
+  </section>
+
+  <section class="text-center">
+    <h4 class="italic text-center pose-base font-decorative mb-6">رقم الآية</h4>
+    <p class="text-lg">{ayaNumber}</p>
+  </section>
+</section>
