@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
-const AudioPlayer = ({ src }: { src: string }) => {
+const AudioPlayer = ({ src }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const audioRef = useRef(new Audio(src));
@@ -28,7 +28,7 @@ const AudioPlayer = ({ src }: { src: string }) => {
 
   return (
     <button
-      onClick={togglePlayPause}
+      onClick={() => togglePlayPause()}
       className="rounded-2xl bg-transparent border-[#94a197] p-2 border w-48 hover:bg-gray-200 active:bg-gray-300 transition duration-150 ease-in-out "
       lang="ar"
     >

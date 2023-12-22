@@ -1,13 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./styles.css";
 import { navigate } from "astro:transitions/client";
 
 const RecordButton = () => {
   const [disableRecorder, setDisableRecorder] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
-    null
-  );
+  const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioChunks, setAudioChunks] = useState([]);
 
   const startRecording = async () => {
@@ -19,13 +17,13 @@ const RecordButton = () => {
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorder.start();
 
-        const chunks: ((prevState: never[]) => never[]) | Blob[] = [];
+        const chunks = [];
         mediaRecorder.ondataavailable = (event) => {
           chunks.push(event.data);
         };
 
         setMediaRecorder(mediaRecorder);
-        setAudioChunks(chunks as any);
+        setAudioChunks(chunks);
         setIsRecording(true);
       } catch (error) {
         console.error("Error accessing microphone:", error);
@@ -81,7 +79,9 @@ const RecordButton = () => {
   return (
     <button
       disabled={disableRecorder}
-      onClick={toggleRecording}
+      onClick={() => {
+        toggleRecording();
+      }}
       className={`relative inline-flex items-center ${
         disableRecorder
           ? "opacity-50 cursor-not-allowed"

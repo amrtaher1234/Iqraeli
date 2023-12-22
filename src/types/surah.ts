@@ -16,7 +16,8 @@ export interface SurahType {
     };
   };
   meta: {
-    juz: number,
-    page: number,
-    hizbQuarter: 240,
+    juz: number;
+    page: number;
+    hizbQuarter: 240;
+  };
 }

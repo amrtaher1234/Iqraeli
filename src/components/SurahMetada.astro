@@ -1,6 +1,4 @@
 ---
-import type { SurahType } from "../types/surah";
-
 interface Props {
   juz: string;
   page: string;
@@ -9,7 +7,7 @@ interface Props {
   ayaNumber: string;
 }
 
-const { hizbQuarter, juz, page, surahNumber, ayaNumber } = Astro.props;
+const { hizbQuarter, juz, page, ayaNumber } = Astro.props;
 ---
 
 <section class="grid grid-cols-4">
