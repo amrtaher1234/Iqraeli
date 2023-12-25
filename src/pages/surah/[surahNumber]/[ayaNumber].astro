@@ -5,7 +5,6 @@ import SurahMetadata from '../../../components/SurahMetada.astro'
 import { type SurahType } from '../../../types/surah'
 import tafseer from '../../api/surah/[surahNumber]/tafseer.json'
 import AudioPlayer from '../../../components/Audio'
-import { navigate } from 'astro:transitions/client'
 
 const { surahNumber, ayaNumber } = Astro.params
 const surahData: SurahType = await fetch(
@@ -30,14 +29,8 @@ const description = surahData.text.arab
 
 <Layout title={title}>
     <meta name="description" content={description} />
-    <main class="pb-50">
-        <AudioPlayer
-            client:only
-            src={surahData.audio.primary}
-            surahNumber={Number(surahNumber)}
-            ayaNumber={Number(ayaNumber)}
-            surah={surahData}
-        />
+
+    <main transition:animate="slide" class="p-4 pb-40 mt-6">
         <Surah tafsirArabic={ayahTafseer!.text} {...surahData} />
 
         <span class="my-12 block"></span>
@@ -49,4 +42,11 @@ const description = surahData.text.arab
             ayaNumber={Number(ayaNumber!).toLocaleString('ar')}
         />
     </main>
+    <AudioPlayer
+        client:only
+        src={surahData.audio.primary}
+        surahNumber={Number(surahNumber)}
+        ayaNumber={Number(ayaNumber)}
+        surah={surahData}
+    />
 </Layout>
