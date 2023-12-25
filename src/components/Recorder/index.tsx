@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import './styles.css'
 import { navigate } from 'astro:transitions/client'
+import Button from '../Button'
 
 const RecordButton = () => {
+    const [isRecorded, setIsRecorded] = useState(false)
     const [disableRecorder, setDisableRecorder] = useState(false)
     const [isRecording, setIsRecording] = useState(false)
     const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
         null
     )
-    const [audioChunks, setAudioChunks] = useState([])
+    const [audioChunks, setAudioChunks] = useState<BlobPart[]>([])
 
     const startRecording = async () => {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -20,7 +22,7 @@ const RecordButton = () => {
                 mediaRecorder.start()
 
                 const chunks: any = []
-                mediaRecorder.ondataavailable = (event) => {
+                mediaRecorder.ondataavailable = function (event) {
                     chunks.push(event.data)
                 }
 
@@ -36,36 +38,39 @@ const RecordButton = () => {
             // Notify user that their browser does not support this feature
         }
     }
+    const sendAudio = () => {
+        setDisableRecorder(true)
+        debugger
+        const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' })
+        const formData = new FormData()
+        formData.append('audio', audioBlob, 'recording.mp3')
+        fetch('/audio', {
+            method: 'POST',
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then(({ surahNumber, ayaNumber }) => {
+                if (!surahNumber || !ayaNumber) {
+                    alert('error')
+                    return
+                }
+                navigate(`/surah/${surahNumber}/${ayaNumber}`)
+            })
+            .catch((error) => console.error('Error:', error))
+            .finally(() => {
+                setDisableRecorder(false)
+            })
 
+        setAudioChunks([])
+        setIsRecorded(false)
+    }
     const stopRecording = () => {
         if (mediaRecorder) {
-            setDisableRecorder(true)
+            // setDisableRecorder(true)
             mediaRecorder.stop()
             setIsRecording(false)
-
-            mediaRecorder.onstop = async () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' })
-                const formData = new FormData()
-                formData.append('audio', audioBlob, 'recording.mp3')
-
-                fetch('/audio', {
-                    method: 'POST',
-                    body: formData,
-                })
-                    .then((response) => response.json())
-                    .then(({ surahNumber, ayaNumber }) => {
-                        if (!surahNumber || !ayaNumber) {
-                            alert('error')
-                            return
-                        }
-                        navigate(`/surah/${surahNumber}/${ayaNumber}`)
-                    })
-                    .catch((error) => console.error('Error:', error))
-                    .finally(() => {
-                        setDisableRecorder(false)
-                    })
-
-                setAudioChunks([])
+            mediaRecorder.onstop = async function () {
+                setIsRecorded(true)
             }
         }
     }
@@ -79,20 +84,29 @@ const RecordButton = () => {
     }
 
     return (
-        <button
-            disabled={disableRecorder}
-            onClick={() => {
-                toggleRecording()
-            }}
-            className={`relative inline-flex items-center ${
-                disableRecorder
-                    ? 'cursor-not-allowed opacity-50'
-                    : 'hover:opacity-75 active:opacity-50'
-            }`}
-        >
-            <img src="/recorder.png" alt="recorder" className="h-16" />
-            {isRecording && <span className="flash-light"></span>}
-        </button>
+        <div className="flex flex-row gap-2">
+            <Button
+                disabled={disableRecorder}
+                onClick={() => {
+                    toggleRecording()
+                }}
+                className="relative flex min-w-24 justify-center self-center"
+            >
+                {isRecording && <span className="flash-light"></span>}
+                {isRecording ? 'stop' : 'سجل قرأتك'}
+            </Button>
+            {isRecorded && (
+                <Button
+                    disabled={disableRecorder}
+                    onClick={() => {
+                        sendAudio()
+                    }}
+                    className="min-w-24 self-center"
+                >
+                    أرسل
+                </Button>
+            )}
+        </div>
     )
 }
 

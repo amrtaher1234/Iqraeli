@@ -1,50 +1,62 @@
 ---
-import { ViewTransitions } from "astro:transitions";
-import Header from "../components/Header.astro";
+import { ViewTransitions } from 'astro:transitions'
+import Header from '../components/Header.astro'
+import RecordButton from '../components/Recorder'
+import { Image } from 'astro:assets'
 interface Props {
-  title?: string;
+    title?: string
 }
 
-const { title } = Astro.props;
+const { title } = Astro.props
 ---
 
 <!doctype html>
 <html dir="rtl" lang="ar">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content="Astro description" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/recorder.png" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title ?? "اقرألي - تسجيل واستماع للقرآن الكريم"}</title>
-    <meta
-      name="description"
-      content="اقرألي - منصة لتسجيل الآيات القرآنية، الاستماع إلى تلاوات الشيوخ، والتعمق في تفسير القرآن."
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <ViewTransitions />
-  </head>
-  <body class="bg-[#e1e5e0] text-iqraelitext">
-    <Header />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Astro description" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/recorder.png" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title ?? 'اقرألي - تسجيل واستماع للقرآن الكريم'}</title>
+        <meta
+            name="description"
+            content="اقرألي - منصة لتسجيل الآيات القرآنية، الاستماع إلى تلاوات الشيوخ، والتعمق في تفسير القرآن."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <ViewTransitions />
+    </head>
+    <body class="bg-[#ebe9e2]">
+        <Header />
 
-    <main class="container flex items-center justify-center">
-      <slot />
-    </main>
-    <style is:global>
-      @font-face {
-        font-family: "Uthman";
-        src: url("/fonts/Uthman.otf") format("otf");
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-      }
-      @font-face {
-        font-family: "Noto Nastaliq Urdu";
-        src: url("/fonts/NotoNastaliqUrdu.ttf.otf") format("otf");
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-      }
-    </style>
-  </body>
+        <Image
+            src="/hero.png"
+            alt="نص وصفي"
+            width="1200"
+            height="500"
+            class="rounded-[60px] w-[95%] m-auto rounded-t-[180px]"
+        />
+
+        <main class="container flex items-center justify-center flex-col">
+            <!-- <RecordButton client:load /> -->
+            <slot />
+        </main>
+        <style is:global>
+            @import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap');
+            @font-face {
+                font-family: 'Uthman';
+                src: url('/fonts/Uthman.otf') format('otf');
+                font-weight: normal;
+                font-style: normal;
+                font-display: swap;
+            }
+            @font-face {
+                font-family: 'Noto Nastaliq Urdu';
+                src: url('/fonts/NotoNastaliqUrdu.ttf.otf') format('otf');
+                font-weight: normal;
+                font-style: normal;
+                font-display: swap;
+            }
+        </style>
+    </body>
 </html>

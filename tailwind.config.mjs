@@ -9,7 +9,8 @@ export default {
 		extend: {
 
 			colors: {
-				iqraelitext: '#0b0d0b'
+				iqraelitext: '#d29f7e',
+				primary: "#6b6e64"
 			},
 			fontFamily: {
 				sans: ["Uthman", "Uthman", "sans-serif"],

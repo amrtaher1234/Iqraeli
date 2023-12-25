@@ -4,13 +4,28 @@ import Layout from '../layouts/Layout.astro'
 ---
 
 <script></script>
-
 <Layout title="اقرألي">
-    <section class="text-center p-8">
-        <h2 class="text-4xl font-bold mb-4">تسجيل الآيات القرآنية</h2>
-        <p class="text-lg mb-6">
-            سجّل آيات القرآن الكريم واستمع إليها لتحسين تلاوتك وتجويدك.
+    <main class="w-full prose mt-4 container p-4 max-w-96">
+        <h6 class="self-center font-semibold font-sans">
+            مرحباً بك في <span class="text-iqraelitext">إقرألي</span>، حيث يمكنك
+            تسجيل آيات من القرآن والحصول على تحليلات للآية على الفور
+        </h6>
+
+        <ol
+            style={{
+                'list-style': 'arabic-indic',
+            }}
+        >
+            <li>سجل آية من القرآن، حاول أن تشمل آية واحدة فقط</li>
+            <li>أرسل الآية للتحليل</li>
+            <li>استمع للآية من الشيخ وتدرب عليها</li>
+            <li>اكتشف تفسير الآية</li>
+        </ol>
+        <p>
+            نصيحة: يمكنك أثناء التسجيل أن تقول مثلاً "سورة البقرة" لإضافة مزيد
+            من البيانات
         </p>
+
         <RecordButton client:load />
-    </section>
+    </main>
 </Layout>

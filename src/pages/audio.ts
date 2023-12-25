@@ -59,7 +59,7 @@ export const POST: APIRoute = async ({ request }) => {
         return new Response(
             JSON.stringify({
                 message:
-                    'Was unable to get the surah or ayah number from audip',
+                    'Was unable to get the surah or ayah number from audio',
             }),
             {
                 status: 500,

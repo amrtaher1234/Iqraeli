@@ -1,30 +1,25 @@
 ---
-import type { SurahType } from "../types/surah";
-import AudioPlayer from "./Audio";
+import type { SurahType } from '../types/surah'
 
 interface Props extends SurahType {
-  tafsirArabic: string;
+    tafsirArabic: string
 }
 
-const { audio, surah, text, tafsirArabic } = Astro.props;
+const { audio, surah, text, tafsirArabic } = Astro.props
 ---
 
 <section
-  class="grid lg:grid-cols-3 grid-cols-1 justify-items-center gap-6 lg:gap-0"
+    class="grid lg:grid-cols-3 grid-cols-1 justify-items-center gap-6 lg:gap-0"
 >
-  <section class="text-center">
-    <h2 class="text-4xl text-bold font-decorative mb-8">
-      {surah.name.long}
-    </h2>
-    <p class="text-lg">{text.arab}</p>
-  </section>
-  <div class="flex flex-col items-center">
-    <img src="/mosque.png" />
-    <AudioPlayer client:only src={audio.primary} />
-  </div>
+    <section class="text-center">
+        <h2 class="text-4xl text-bold font-decorative mb-8">
+            {surah.name.long}
+        </h2>
+        <p class="text-lg">{text.arab}</p>
+    </section>
+</section>
 
-  <section class="text-center">
+<section class="text-center">
     <h4 class="italic pose-base font-decorative mb-8">التفسير</h4>
     <p class="text-lg">{tafsirArabic}</p>
-  </section>
 </section>

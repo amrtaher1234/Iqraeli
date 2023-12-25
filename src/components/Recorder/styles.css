@@ -1,16 +1,23 @@
 @keyframes flashing {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-  
-  .flash-light {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+.flash-light {
     animation: flashing 1s infinite;
-    position: absolute;
+    /* position: absolute;
     top: 0;
-    right: 0;
+    right: 0; */
     height: 10px;
     width: 10px;
     background-color: red;
     border-radius: 50%;
-  }
-  
+    display: block;
+    margin-left: 12px;
+    align-self: center;
+}
