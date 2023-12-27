@@ -44,7 +44,7 @@ const { title } = Astro.props
 
         <main class="container flex items-center justify-center flex-col">
             <div class="my-4">
-                <RecordButton client:load transition:persist />
+                <RecordButton client:load transition:persist="record" />
             </div>
 
             <slot />
