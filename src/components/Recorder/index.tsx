@@ -20,6 +20,7 @@ interface Props {
     }) => void
 }
 const RecordButton = ({ onResults }: Props) => {
+    const [loading, setIsLoading] = useState(false)
     const [matches, setMatches] = useState<Match[]>([])
     const [isRecorded, setIsRecorded] = useState(false)
     const [disableRecorder, setDisableRecorder] = useState(false)
@@ -57,6 +58,7 @@ const RecordButton = ({ onResults }: Props) => {
         setDisableRecorder(true)
         const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' })
         const formData = new FormData()
+        setIsLoading(true)
         formData.append('audio', audioBlob, 'recording.mp3')
         fetch('/audio', {
             method: 'POST',
@@ -77,6 +79,7 @@ const RecordButton = ({ onResults }: Props) => {
             .catch((error) => console.error('Error:', error))
             .finally(() => {
                 setDisableRecorder(false)
+                setIsLoading(false)
             })
 
         setAudioChunks([])
@@ -103,29 +106,33 @@ const RecordButton = ({ onResults }: Props) => {
 
     return (
         <div className="flex flex-col gap-2">
-            <div className="flex flex-row gap-2">
-                <Button
-                    disabled={disableRecorder}
-                    onClick={() => {
-                        toggleRecording()
-                    }}
-                    className="relative flex min-w-24 justify-center self-center"
-                >
-                    {isRecording && <span className="flash-light"></span>}
-                    {isRecording ? 'إيقاف التسجيل' : 'سجل قرأتك'}
-                </Button>
-                {isRecorded && (
+            {loading ? (
+                'جاري التحميل'
+            ) : (
+                <div className="flex flex-row gap-2">
                     <Button
                         disabled={disableRecorder}
                         onClick={() => {
-                            sendAudio()
+                            toggleRecording()
                         }}
-                        className="min-w-24 self-center"
+                        className="relative flex min-w-24 justify-center self-center"
                     >
-                        أرسل
+                        {isRecording && <span className="flash-light"></span>}
+                        {isRecording ? 'إيقاف التسجيل' : 'سجل قرأتك'}
                     </Button>
-                )}
-            </div>
+                    {isRecorded && (
+                        <Button
+                            disabled={disableRecorder}
+                            onClick={() => {
+                                sendAudio()
+                            }}
+                            className="min-w-24 self-center"
+                        >
+                            أرسل
+                        </Button>
+                    )}
+                </div>
+            )}
 
             {matches && matches.length ? (
                 <section className="prose">
