@@ -1,5 +1,11 @@
 import type { APIRoute } from 'astro'
 import OpenAI from 'openai'
+import { Pinecone } from '@pinecone-database/pinecone'
+
+const pinecone = new Pinecone({
+    apiKey: import.meta.env.PINECONE_API_KEY,
+    environment: 'gcp-starter',
+})
 
 const client = new OpenAI({
     apiKey: import.meta.env.OPEN_AI_KEY,
@@ -14,26 +20,21 @@ async function sendToOpenAI(file: File) {
     return result.text
 }
 const run = async (text = '') => {
-    const responseForSurah = await client.chat.completions.create({
-        model: 'gpt-4',
-        messages: [
-            {
-                role: 'user',
-                content: `Given this verse from a quran surah, give me the surah name, aya number: ${text}.
-          
-          Data should be in JSON format with these fields:
-          
-          {
-              surahName: string, // in arabic
-              ayaNumber: number,
-              confidence: number, // how much confident out of 100 the result is,
-              surahNumber: number, // number of surah in quran
-          }`,
-            },
-        ],
-    })
+    const embedding = (
+        await client.embeddings.create({
+            input: text,
+            model: 'text-embedding-ada-002',
+        })
+    ).data[0].embedding
 
-    return responseForSurah.choices[0].message
+    const index = pinecone.Index('quran')
+    const result = await index.query({
+        vector: embedding,
+        topK: 5,
+        includeMetadata: true,
+        includeValues: false,
+    })
+    return result.matches
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -44,14 +45,12 @@ export const POST: APIRoute = async ({ request }) => {
         throw new Error(err)
     })
     try {
-        const { surahNumber, ayaNumber } = JSON.parse(
-            (await run(response)).content ?? '{}'
-        )
+        const matches = await run(response)
 
         return new Response(
             JSON.stringify({
-                surahNumber,
-                ayaNumber,
+                matches,
+                text: response,
             }),
             { status: 200 }
         )

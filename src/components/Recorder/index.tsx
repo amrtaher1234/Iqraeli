@@ -3,7 +3,24 @@ import './styles.css'
 import { navigate } from 'astro:transitions/client'
 import Button from '../Button'
 
-const RecordButton = () => {
+interface Match {
+    metadata: {
+        surah_name_arabic: string
+        surah_number: number
+        aya_number: number
+    }
+}
+interface Props {
+    onResults?: (matches: {
+        metadata: {
+            surah_name_arabic: string
+            surah_number: number
+            aya_number: number
+        }[]
+    }) => void
+}
+const RecordButton = ({ onResults }: Props) => {
+    const [matches, setMatches] = useState<Match[]>([])
     const [isRecorded, setIsRecorded] = useState(false)
     const [disableRecorder, setDisableRecorder] = useState(false)
     const [isRecording, setIsRecording] = useState(false)
@@ -31,16 +48,13 @@ const RecordButton = () => {
                 setIsRecording(true)
             } catch (error) {
                 console.error('Error accessing microphone:', error)
-                // Handle the error appropriately
             }
         } else {
             console.error('getUserMedia not supported on your browser!')
-            // Notify user that their browser does not support this feature
         }
     }
     const sendAudio = () => {
         setDisableRecorder(true)
-        debugger
         const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' })
         const formData = new FormData()
         formData.append('audio', audioBlob, 'recording.mp3')
@@ -49,12 +63,16 @@ const RecordButton = () => {
             body: formData,
         })
             .then((response) => response.json())
-            .then(({ surahNumber, ayaNumber }) => {
-                if (!surahNumber || !ayaNumber) {
-                    alert('error')
-                    return
+            .then(({ matches, text }) => {
+                setMatches(matches)
+                const mostSimilarOption = matches[0]
+                const { aya_number, surah_number } = mostSimilarOption.metadata
+                if (onResults) {
+                    onResults(matches)
                 }
-                navigate(`/surah/${surahNumber}/${ayaNumber}`)
+                navigate(`/surah/${surah_number}/${aya_number}`, {
+                    state: history.state,
+                })
             })
             .catch((error) => console.error('Error:', error))
             .finally(() => {
@@ -84,28 +102,67 @@ const RecordButton = () => {
     }
 
     return (
-        <div className="flex flex-row gap-2">
-            <Button
-                disabled={disableRecorder}
-                onClick={() => {
-                    toggleRecording()
-                }}
-                className="relative flex min-w-24 justify-center self-center"
-            >
-                {isRecording && <span className="flash-light"></span>}
-                {isRecording ? 'stop' : 'سجل قرأتك'}
-            </Button>
-            {isRecorded && (
+        <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-2">
                 <Button
                     disabled={disableRecorder}
                     onClick={() => {
-                        sendAudio()
+                        toggleRecording()
                     }}
-                    className="min-w-24 self-center"
+                    className="relative flex min-w-24 justify-center self-center"
                 >
-                    أرسل
+                    {isRecording && <span className="flash-light"></span>}
+                    {isRecording ? 'إيقاف التسجيل' : 'سجل قرأتك'}
                 </Button>
-            )}
+                {isRecorded && (
+                    <Button
+                        disabled={disableRecorder}
+                        onClick={() => {
+                            sendAudio()
+                        }}
+                        className="min-w-24 self-center"
+                    >
+                        أرسل
+                    </Button>
+                )}
+            </div>
+
+            {matches && matches.length ? (
+                <section className="prose">
+                    <h4>النتائج الممكنة</h4>
+                    <p>هذه النتائج هي نتائج ممكنة لسجلك مرتبة حسب التشابه</p>
+                    <ol
+                        style={{
+                            'list-style': 'arabic-indic',
+                        }}
+                    >
+                        {matches.map(
+                            ({
+                                metadata: {
+                                    aya_number,
+                                    surah_name_arabic,
+                                    surah_number,
+                                },
+                            }) => (
+                                <li>
+                                    <span>
+                                        رقم الآية:{' '}
+                                        {Number(aya_number).toLocaleString(
+                                            'ar'
+                                        )}
+                                    </span>
+                                    {' - '}
+                                    <a
+                                        href={`/surah/${surah_number}/${aya_number}`}
+                                    >
+                                        {surah_name_arabic}
+                                    </a>
+                                </li>
+                            )
+                        )}
+                    </ol>
+                </section>
+            ) : null}
         </div>
     )
 }
