@@ -183,7 +183,7 @@ export default function Recorder() {
                     ) => (
                       <li key={index}>
                         <Link href={`/surah/${surah_number}/${aya_number}`}>
-                          {surah_name_arabic} - {surah_number.toLocaleString("ar")}
+                          {surah_name_arabic} - {aya_number.toLocaleString("ar")}
                         </Link>
                       </li>
                     ),
