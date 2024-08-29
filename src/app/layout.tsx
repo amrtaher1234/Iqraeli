@@ -4,7 +4,7 @@ import "./globals.css";
 import ThemeSwitcher from "@/components/theme-switch";
 import Link from "next/link";
 import Image from "next/image";
-
+import { Analytics } from "@vercel/analytics/react";
 const inter = Noto_Kufi_Arabic({ subsets: ["arabic"] });
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html dir="rtl" data-theme="cupcake" lang="ar">
-      <body>
+      <body className={inter.className}>
         <div className="navbar bg-base-100">
           <div className="flex-1">
             <Link href="/" className="btn btn-ghost text-xl">
@@ -79,6 +79,7 @@ export default function RootLayout({
             </a>
           </nav>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
