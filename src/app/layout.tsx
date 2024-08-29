@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Noto_Kufi_Arabic } from "next/font/google";
 import "./globals.css";
 import ThemeSwitcher from "@/components/theme-switch";
+import Link from "next/link";
+import Image from "next/image";
 
 const inter = Noto_Kufi_Arabic({ subsets: ["arabic"] });
 
@@ -17,16 +19,18 @@ export default function RootLayout({
 }>) {
   return (
     <html dir="rtl" data-theme="cupcake" lang="ar">
-      <body className={`${inter.className} `}>
+      <body>
         <div className="navbar bg-base-100">
           <div className="flex-1">
-            <a className="btn btn-ghost text-xl">daisyUI</a>
+            <Link href="/" className="btn btn-ghost text-xl">
+              <Image height={32} width={32} alt="icon" src="/icon.png" /> اقرألي
+            </Link>
           </div>
           <div className="flex-none">
             <ThemeSwitcher />
           </div>
         </div>
-        <main className="prose">{children}</main>
+        {children}
 
         <footer className="footer bg-neutral text-neutral-content items-center p-4">
           <aside className="grid-flow-col items-center">

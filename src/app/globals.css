@@ -22,3 +22,23 @@
     text-wrap: balance;
   }
 }
+.audio-player {
+  position: fixed;
+  bottom: 0;
+}
+
+.rhap_additional-controls,
+.rhap_volume-controls {
+  display: none;
+}
+
+.rhap_controls-section {
+  justify-content: center;
+}
+
+.rhap_container {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
