@@ -1,4 +1,5 @@
 "use client";
+import { useSimilarResults } from "@/context/similar-results";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,9 +12,9 @@ interface Match {
 }
 
 export default function Recorder() {
+  const { setSimilarResults, similarResults } = useSimilarResults();
   const router = useRouter();
   const [loading, setIsLoading] = useState(false);
-  const [matches, setMatches] = useState<Match[]>([]);
   const [isRecorded, setIsRecorded] = useState(false);
   const [disableRecorder, setDisableRecorder] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -58,7 +59,7 @@ export default function Recorder() {
     })
       .then((response) => response.json())
       .then(({ matches, text }) => {
-        setMatches(matches);
+        setSimilarResults(matches);
         const mostSimilarOption = matches[0];
         const { aya_number, surah_number } = mostSimilarOption.metadata;
         router.push(`/surah/${surah_number}/${aya_number}`);
@@ -103,7 +104,7 @@ export default function Recorder() {
     })
       .then((response) => response.json())
       .then(({ matches }) => {
-        setMatches(matches);
+        setSimilarResults(matches);
         const mostSimilarOption = matches[0];
         const { aya_number, surah_number } = mostSimilarOption.metadata;
         router.push(`/surah/${surah_number}/${aya_number}`);
@@ -157,13 +158,15 @@ export default function Recorder() {
       </div>
       {loading && <div className="loading" />}
 
-      {!loading && matches.length > 0 ? (
+      {!loading && similarResults.length > 0 ? (
         <>
-          <div className="drawer drawer-end">
+          <div className="drawer drawer-end flex justify-center">
             <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content">
               {/* Page content here */}
-              <label htmlFor="my-drawer-4" className="drawer-button btn mt-2 w-full ">
+              <label
+                htmlFor="my-drawer-4"
+                className="drawer-button btn mt-2 self-center ">
                 المزيد من النتائج
               </label>
             </div>
@@ -174,7 +177,7 @@ export default function Recorder() {
                 className="drawer-overlay"></label>
               <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
                 {/* Sidebar content here */}
-                {matches
+                {similarResults
                   .slice(1)
                   .map(
                     (

@@ -1,6 +1,26 @@
 import AudioPlayerComponent from "@/components/audio-player";
+import Recorder from "@/components/recorder";
 import { readFileSync } from "fs";
 
+export async function generateMetadata({
+  params: { surah, ayah },
+}: {
+  params: {
+    surah: string;
+    ayah: string;
+  };
+}) {
+  const surahNumber = Number(surah);
+  const ayahNumber = Number(ayah);
+  const ayahData = await getAyahFromSurah(surahNumber, ayahNumber);
+  const tafseer = JSON.parse(
+    readFileSync(process.cwd() + "/src/app/tafseer.json", "utf-8"),
+  );
+
+  return {
+    title: `إقرألي - ${ayahData.surah.name.long} - ${ayahNumber.toLocaleString("ar")}`,
+  };
+}
 function getAyahFromSurah(surah: number, ayah: number): any {
   const quran = JSON.parse(readFileSync(process.cwd() + "/src/app/quran.json", "utf-8"));
   const checkSurah = (quran as any).data[surah - 1];
@@ -35,6 +55,7 @@ export default async function Page({
   );
   return (
     <div>
+      <Recorder />
       <div>
         <h4>
           {ayahData.surah.name.long} - {ayahNumber.toLocaleString("ar")}

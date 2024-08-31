@@ -41,6 +41,7 @@ const AudioPlayerComponent = ({
   }
   return (
     <AudioPlayer
+      volume={0.4}
       showDownloadProgress={false}
       showFilledProgress={false}
       showFilledVolume={false}
