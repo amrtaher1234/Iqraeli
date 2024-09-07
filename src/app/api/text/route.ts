@@ -44,6 +44,7 @@ export async function POST(request: Request) {
     return new Response(
       JSON.stringify({
         message: "Was unable to get the surah or ayah number from audio",
+        error: err,
       }),
       {
         status: 500,
